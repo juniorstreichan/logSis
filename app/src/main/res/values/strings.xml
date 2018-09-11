@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">InicialApp</string>
+    <string name="label_login">LOGIN</string>
+    <string name="label_senha">SENHA</string>
+</resources>
