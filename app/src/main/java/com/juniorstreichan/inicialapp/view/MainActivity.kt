@@ -1,15 +1,15 @@
-package com.juniorstreichan.inicialapp
+package com.juniorstreichan.inicialapp.view
 
-import android.content.DialogInterface
+import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.juniorstreichan.inicialapp.R
 import com.juniorstreichan.inicialapp.repository.SqLiteHelper
 
 
@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sqLite: SqLiteHelper
     private lateinit var db: SQLiteDatabase
     private lateinit var btnLogin: Button
+    private lateinit var btnReg: Button
     private var cursor: Cursor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,20 +29,28 @@ class MainActivity : AppCompatActivity() {
         txEmail = findViewById(R.id.tx_login)
         txSenha = findViewById(R.id.tx_senha)
         btnLogin = findViewById(R.id.btn_login)
+        btnReg = findViewById(R.id.btn_register)
 
-        val clickLogin = View.OnClickListener {
+        btnLogin.setOnClickListener({
             dologin()
-        }
+        })
 
-        btnLogin.setOnClickListener(clickLogin)
+        btnReg.setOnClickListener({
+            doRegister()
+        })
 
         sqLite = SqLiteHelper(context = this)
 
         db = sqLite.readableDatabase
         sqLite.onCreate(db)
 
-//        val values = ContentValues()
     }
+
+    fun doRegister() {
+        val intent = Intent(this@MainActivity, RegisterActivity::class.java);
+        startActivity(intent)
+    }
+
 
     fun dologin() {
 
@@ -53,10 +62,10 @@ class MainActivity : AppCompatActivity() {
                      and ${sqLite.COLUMN_SENHA} = '$senha' """.trimMargin()
                 , null)
 
-        if (cursor != null) {
+        cursor?.let {
             if (!cursor?.count!!.equals(0)) {
 
-                cursor?.moveToFirst();
+                cursor?.moveToFirst()
 
                 val _name = cursor?.getString(cursor!!.getColumnIndex(sqLite.COLUMN_NOME))
                 val _email = cursor?.getString(cursor!!.getColumnIndex(sqLite.COLUMN_EMAIL))
@@ -67,8 +76,10 @@ class MainActivity : AppCompatActivity() {
 
                 val alertBuilder = AlertDialog.Builder(this)
                 alertBuilder.setTitle("Alerta")
-                alertBuilder.setMessage("Usuário ou senha inválido")
-                alertBuilder.setPositiveButton("OK", DialogInterface.OnClickListener { dialogInterface, i -> dialogInterface.dismiss() })
+                alertBuilder.setMessage("Usuário ou senha inválidos")
+                alertBuilder.setPositiveButton("OK") { dialogInterface, i ->
+                    dialogInterface.dismiss()
+                }
                 val dialog = alertBuilder.create()
                 dialog.show()
 
