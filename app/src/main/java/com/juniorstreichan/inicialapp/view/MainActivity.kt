@@ -31,13 +31,13 @@ class MainActivity : AppCompatActivity() {
         btnLogin = findViewById(R.id.btn_login)
         btnReg = findViewById(R.id.btn_register)
 
-        btnLogin.setOnClickListener({
+        btnLogin.setOnClickListener {
             dologin()
-        })
+        }
 
-        btnReg.setOnClickListener({
+        btnReg.setOnClickListener {
             doRegister()
-        })
+        }
 
         sqLite = SqLiteHelper(context = this)
 
@@ -46,13 +46,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun doRegister() {
+    private fun doRegister() {
         val intent = Intent(this@MainActivity, RegisterActivity::class.java);
         startActivity(intent)
     }
 
 
-    fun dologin() {
+    private fun dologin() {
 
         val login = txEmail.text.toString()
         val senha = txSenha.text.toString()
@@ -71,7 +71,11 @@ class MainActivity : AppCompatActivity() {
                 val _email = cursor?.getString(cursor!!.getColumnIndex(sqLite.COLUMN_EMAIL))
 
                 Toast.makeText(this, " $_name logado com sucesso !!", Toast.LENGTH_LONG).show()
-
+                val intent = Intent(this@MainActivity, HomeActivity::class.java)
+                intent.putExtra("nome", _name)
+                intent.putExtra("email", _email)
+                startActivity(intent)
+                finish()
             } else {
 
                 val alertBuilder = AlertDialog.Builder(this)
